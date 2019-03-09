@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Search for Movies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+    </style>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/style.css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top navbar-expand-lg navbar-dark indigo navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/"> <span class="logo">#Movie App</span>
+				</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/">Home</a></li>
+					<li><a href="#about">New Release</a></li>
+					<li><a href="#contact">Top Rated</a></li>
+					<li><a href="#contact">Editor Picks</a></li>
+					<li><a href="/usermovie/favourites">My Favourites</a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">My Account<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#contact">My Subscription</a></li>		
+						</ul>
+					</li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Action Movies</a></li>
+							<li><a href="#">Sci-fi Movies</a></li>
+							<li><a href="#">Animation Movies</a></li>
+							<li role="separator" class="divider"></li>
+							<li class="dropdown-header">New Collections</li>
+							<li><a href="#">90's Top Picks</a></li>
+							<li><a href="#">5 Star Movies</a></li>
+						</ul></li>
+						<li><a href="/user/logout">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<br />
+	<div class="container">
+		<div class="row">
+	        <div class="col-sm-6 col-sm-offset-3">
+	            <div id="imaginary_container"> 
+	            	<form class="form-horizontal" action='/usermovie/search' method="POST">
+		                <div class="input-group stylish-input-group">
+		                    <input type="text" class="form-control" name="search" placeholder="Search" 
+		                    	value="<% if(locals.data) {   %> <%= locals.input%> <% } %> "
+		                   	/>
+		                    <span class="input-group-addon">
+		                        <button type="submit" style="padding: 0px 12px">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                        </button>  
+		                    </span>
+		                </div>
+		        	</form>
+	            </div>
+	        </div>
+		</div>
+		<br />
+		<% if(locals.data) { 
+			var jsonObj = JSON.parse(locals.data);
+			
+			var total_pages = jsonObj.total_pages;
+			var total_results = jsonObj.total_results;
+			var page = jsonObj.page;
+			
+			var isDisableFirst = page == 1 ? "disabled":"";
+			var isDisableSecond = page == total_pages ? "disabled":"";
+			
+ 			var pageStart = page;
+			var pageEnd = page + 5;
+			
+			if (pageEnd > total_pages ) {
+				pageStart = total_pages - 5;
+				pageEnd = total_pages;
+				
+				if (pageStart < 0) {
+					pageStart = page;
+					pageEnd = total_pages;
+				}
+			}
+		%>
+		<div class="row">
+	        <div class="col-sm-4 col-sm-offset-4">
+				 <ul class="pagination justify-content-center">
+				    <li class="<%= isDisableFirst %>"><a href="/usermovie/search/<%=input%>/<%= page - 1 %>">&laquo;</a></li>
+				    <% for(i = pageStart; i <= pageEnd ; i++) { 
+				    	var flag =  page == i ? 'active':''; 
+				    %>
+					    <li class="<%= flag %>"><a href="/usermovie/search/<%=input%>/<%= i%>"><%= i %></a></li>
+					<% } %>
+				    <li class="<%= isDisableSecond %>"><a href="/usermovie/search/<%=input%>/<%= page + 1 %>">&raquo;</a></li>
+				</ul>
+			</div>
+		</div>
+		<% if (mode == 'search') { %>
+			<h1>Search Results : 
+	        	<small>for <%=input%> </small>
+	      	</h1>
+      	<% } else { %>
+      		<h1>Favourties</h1>
+	     <% } %>
+      	<small><div>Total Pages : <%=total_pages%> | Total Results : <%=total_results%> </div></small>
+      	<br />
+		<div class="row">
+			<%
+				function sp(size, arr) {
+				    var out = [],i = 0, n= Math.ceil((arr.length)/size); 
+				    while(i < n) { out.push(arr.splice(0, (i == n-1) && size < arr.length ? arr.length: size));  i++;} 
+				    return out;
+				}
+				
+				function isFavourite(movie_id) {
+					var userfavObj = JSON.parse(userfav);
+					var isFav = false;
+					if (userfavObj != null && userfavObj.results != null) {
+					
+						userfavObj.results.forEach(function(ele) {
+							var movieObj = null;
+							try {
+						        movieObj = JSON.parse(ele.movie);
+						        if (movieObj.id == movie_id) {
+									isFav = true;	
+								}
+						    } catch(e) {
+						    }
+							
+						});
+					}
+					return isFav;
+				}
+				
+				for(i = 0; i < jsonObj.results.length; i++) { 
+					var card1 = jsonObj.results[i];
+					
+					if (card1.movie) {
+						try {
+					        card1 = JSON.parse(card1.movie);
+					    } catch(e) {
+					    }
+						
+					}
+					if (card1.poster_path != null) {
+					
+			%>
+	        <div class="col-lg-6 portfolio-item">
+	          <div class="card h-100">
+	            <img class="card-img-top" src="<%= 'https://image.tmdb.org/t/p/w500/'+card1.poster_path %>" alt="">
+	            <div class="card-body">
+	              <h4 class="card-title">
+	                <a href="#"><%= card1.original_title %></a>
+	              </h4>
+	              <p class="card-text"><%= card1.overview %></p>
+	              <div class="card-footer">
+	      				<i class="fa fa-thumbs-up" style="color:blue"  aria-hidden="true"> <%=card1.vote_count%> | </i>
+	      				<i class="fa fa-fire" style="color:orange" aria-hidden="true"> <%=card1.vote_average%> | </i>
+	      				<i class="fa fa-calendar" style="color:green" aria-hidden="true"> <%=card1.release_date%> | </i>
+	      				<i class="fa fa-language" style="color:Maroon" aria-hidden="true"> <%=card1.original_language%> | </i>
+	      				
+	      				<% if (isFavourite(card1.id)) { %>
+	      				<form class="form-horizontal" action='/usermovie/favourites/remove' method="POST">  
+	      					<input type="hidden"  name="movie_obj" value="<%= JSON.stringify(card1); %>" />
+	      					<input type="hidden"  name="user_id" value="<%= user._id %>" />
+	      					<input type="hidden"  name="movie_obj_id" value="<%= card1.id %>" />
+	      					<input type="hidden"  name="page_number" value="<%= page %>" />
+	      					<input type="hidden"  name="query_str" value="<%= input %>" />
+	      					<input type="hidden"  name="mode" value="<%= mode %>" />
+	      					<button type="submit" class="btn btn-link">Remove Favourite <i class="fa fa-heart fa-3" style="color:red" aria-hidden="true"></i></button>
+	      				</form>
+	      				<% } else { %>
+	      				<form class="form-horizontal" action='/usermovie/favourites/add' method="POST">  
+	      					<input type="hidden"  name="movie_obj" value="<%= JSON.stringify(card1); %>" />
+	      					<input type="hidden"  name="user_id" value="<%= user._id %>" />
+	      					<input type="hidden"  name="page_number" value="<%= page %>" />
+	      					<input type="hidden"  name="query_str" value="<%= input %>" />
+	      					<input type="hidden"  name="mode" value="<%= mode %>" />
+	      					<button type="submit" class="btn btn-link">Add Favourite <i class="fa fa-heart-o fa-3" style="color:red" aria-hidden="true"></i></button>
+	      				</form>
+	      				<% } %>
+	    			</div>
+	            </div>
+	          </div>
+	        </div>
+	        <% } %>
+	        <% } %>
+        </div>
+		<% } %>
+	</div>  
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Login/Register for Movie App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+    </style>
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/style.css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top navbar-expand-lg navbar-dark indigo navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/"> <span class="logo">#Movie App</span>
+				</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/">Home</a></li>
+					<li><a href="#about">New Release</a></li>
+					<li><a href="#contact">Top Rated</a></li>
+					<li><a href="#contact">Editor Picks</a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Action Movies</a></li>
+							<li><a href="#">Sci-fi Movies</a></li>
+							<li><a href="#">Animation Movies</a></li>
+							<li role="separator" class="divider"></li>
+							<li class="dropdown-header">New Collections</li>
+							<li><a href="#">90's Top Picks</a></li>
+							<li><a href="#">5 Star Movies</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<br />
+	<br />
+	<br />
+	<br /> 
+	<div class="container">
+	<div class="row">
+        <div class="span12">
+	      <div class="well">
+	        <ul class="nav nav-tabs">
+	          <li><a href="#create" data-toggle="tab">Create Account</a></li>
+	        </ul>
+	        <div id="myTabContent" class="tab-content">
+	          <div class="tab-pane active in" id="login">
+	          	<br/>
+		        <% if (locals.signupMessage.length > 0) { %>
+						<div class="alert alert-danger"><%= signupMessage %></div>
+				<% } %>
+	          	<br/>
+	            <form class="form-horizontal" action='/user/register' method="POST">  
+		            <div class="form-group"> <label class="control-label col-sm-2" for="email">Email</label>  
+		                <div class="col-sm-4"> <input type="email" class="form-control" name="email" id="email" placeholder="Enter email"> </div>  
+		            </div>  
+		            <div class="form-group"> <label class="control-label col-sm-2" for="pwd">Password</label>  
+		                <div class="col-sm-4"> <input type="password" class="form-control" id="pwd" name="password"  placeholder="Enter password"> </div>  
+		            </div>
+		            <!-- <div class="form-group"> <label class="control-label col-sm-2" for="cpwd">Confirm Password</label>  
+		                <div class="col-sm-4"> <input type="password" class="form-control" id="cpwd" placeholder="Re-Enter password"> </div>  
+		            </div>  
+		            <div class="form-group"> <label class="control-label col-sm-2" for="dob">Date of Birth</label>  
+		                <div class="col-sm-4"> <input type="date" class="form-control" id="dob" placeholder="Enter Date of Birth"> </div>  
+		            </div>  -->   
+		            <div class="form-group">  
+		                <div class="col-sm-offset-2 col-sm-12"> 
+		                	<button type="submit" class="btn btn-primary">Submit</button>
+		                	<a href="/user/login" class="btn btn-primary">Already Registered ?</a> 
+		                 </div>  
+		            </div>  
+		            
+		            <% if (locals.message) { %>
+		            	<div class="form-group">  
+					 	 	<div class="alert alert-danger"><%= locals.message %></div>
+					  	</div>
+					<% } %>
+		        </form>  
+	          </div>
+	      </div>
+	    </div>
+	</div>
+</div>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+</body>
+</html>
